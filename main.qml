@@ -3,18 +3,28 @@ import QtQuick.Window 2.2
 
 Window {
     visible: true
-    width: 360
-    height: 360
+    width: 300
+    height: 400
+    Rectangle {
+        id: gameArea
+        width: 200
+        height: 400
+        color: 'black'
 
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
-            Qt.quit();
+        Item {
+            id: block
+            x: 100
+            Rectangle {
+                width: 10
+                height: 10
+                color: 'yellow'
+            }
         }
-    }
-
-    Text {
-        text: qsTr("Hello World")
-        anchors.centerIn: parent
+        Timer {
+            interval: 1000;
+            running: true
+            repeat: true
+            onTriggered: block.y += 10
+        }
     }
 }
