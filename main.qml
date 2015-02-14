@@ -5,18 +5,23 @@ Window {
     visible: true
     width: 300
     height: 400
+
     Rectangle {
         id: gameArea
-        width: 200
-        height: 400
+        property int cellSize: 20
+        property int cellsX: 10
+        property int cellsY: 20
+        width: cellSize * cellsX
+        height: cellSize * cellsY
         color: 'black'
+        focus: true
 
         Item {
             id: block
-            x: 100
+            x: gameArea.cellsX / 2 * gameArea.cellSize
             Rectangle {
-                width: 10
-                height: 10
+                width: gameArea.cellSize
+                height: gameArea.cellSize
                 color: 'yellow'
             }
         }
@@ -24,7 +29,15 @@ Window {
             interval: 1000;
             running: true
             repeat: true
-            onTriggered: block.y += 10
+            onTriggered: block.y += gameArea.cellSize
+        }
+        Keys.onPressed: {
+            if (event.key == Qt.Key_Left) {
+                block.x -= gameArea.cellSize
+            }
+            else if (event.key == Qt.Key_Right) {
+                block.x += gameArea.cellSize
+            }
         }
     }
 }
