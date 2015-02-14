@@ -26,7 +26,8 @@ Window {
             }
         }
         Timer {
-            interval: 1000;
+            id: tick
+            interval: 1000
             running: true
             repeat: true
             onTriggered: block.y += gameArea.cellSize
@@ -38,6 +39,14 @@ Window {
             else if (event.key == Qt.Key_Right) {
                 block.x += gameArea.cellSize
             }
+            else if (event.key == Qt.Key_Down) {
+                // Drop
+                tick.interval = 10
+            }
         }
+    }
+    Text {
+        anchors.left: gameArea.right
+        text: 'SCORE: '
     }
 }
