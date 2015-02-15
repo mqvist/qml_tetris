@@ -1,5 +1,6 @@
 import QtQuick 2.3
 import QtQuick.Window 2.2
+import "game.js" as Game
 
 Window {
     visible: true
@@ -9,24 +10,21 @@ Window {
     Rectangle {
         id: gameField
         property int cellSize: 20
-        property int cellsX: 10
-        property int cellsY: 20
-        width: cellSize * cellsX
-        height: cellSize * cellsY
+        property int cols: 10
+        property int rows: 20
+        width: cellSize * cols
+        height: cellSize * rows
         color: 'black'
         focus: true
 
-        Item {
+        Cell {
             id: block
-            property int col: gameField.cellsX / 2
-            property int row: gameField.cellsY
-            x: (col - 1 )* gameField.cellSize
-            y: (gameField.cellsY - row) * gameField.cellSize
-            Rectangle {
-                width: gameField.cellSize
-                height: gameField.cellSize
-                color: 'yellow'
-            }
+            col: gameField.cols / 2
+            row: gameField.rows
+            maxRow: gameField.rows
+            cellSize: gameField.cellSize
+            color: 'yellow'
+            visible: true
             Timer {
                 id: blockTimer
                 interval: 1000
@@ -39,24 +37,25 @@ Window {
                     col -= 1
             }
             function right() {
-                if (col < gameField.cellsX)
+                if (col < gameField.cols)
                     col += 1
             }
             function down() {
-                if (row > 1)
+                if (row > 1 && Game.isCellFree(row - 1, col))
                     row -= 1
-                else
+                else {
+                    Game.fillCell(row, col, color)
                     reset()
+                }
             }
             function drop() {
                 blockTimer.interval = 10
             }
             function reset() {
-                col = gameField.cellsX / 2
-                row = gameField.cellsY
+                col = gameField.cols / 2
+                row = gameField.rows
                 blockTimer.interval = 1000
             }
-
         }
         Keys.onPressed: {
             if (event.key === Qt.Key_Left) {
@@ -74,4 +73,5 @@ Window {
         anchors.left: gameField.right
         text: 'SCORE: '
     }
+    Component.onCompleted: Game.init(gameField);
 }
