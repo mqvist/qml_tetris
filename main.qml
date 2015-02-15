@@ -27,6 +27,13 @@ Window {
                 height: gameField.cellSize
                 color: 'yellow'
             }
+            Timer {
+                id: blockTimer
+                interval: 1000
+                running: true
+                repeat: true
+                onTriggered: block.down()
+            }
             function left() {
                 if (col > 1)
                     col -= 1
@@ -38,18 +45,18 @@ Window {
             function down() {
                 if (row > 1)
                     row -= 1
+                else
+                    reset()
             }
             function drop() {
                 blockTimer.interval = 10
             }
-
-            Timer {
-                id: blockTimer
-                interval: 1000
-                running: true
-                repeat: true
-                onTriggered: block.down()
+            function reset() {
+                col = gameField.cellsX / 2
+                row = gameField.cellsY
+                blockTimer.interval = 1000
             }
+
         }
         Keys.onPressed: {
             if (event.key === Qt.Key_Left) {
