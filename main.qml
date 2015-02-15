@@ -18,11 +18,26 @@ Window {
 
         Item {
             id: block
-            x: gameField.cellsX / 2 * gameField.cellSize
+            property int col: gameField.cellsX / 2
+            property int row: gameField.cellsY
+            x: (col - 1 )* gameField.cellSize
+            y: (gameField.cellsY - row) * gameField.cellSize
             Rectangle {
                 width: gameField.cellSize
                 height: gameField.cellSize
                 color: 'yellow'
+            }
+            function left() {
+                if (col > 1)
+                    col -= 1
+            }
+            function right() {
+                if (col < gameField.cellsX)
+                    col += 1
+            }
+            function down() {
+                if (row > 1)
+                    row -= 1
             }
         }
         Timer {
@@ -30,14 +45,14 @@ Window {
             interval: 1000
             running: true
             repeat: true
-            onTriggered: block.y += gameField.cellSize
+            onTriggered: block.down()
         }
         Keys.onPressed: {
             if (event.key === Qt.Key_Left) {
-                block.x -= gameField.cellSize
+                block.left()
             }
             else if (event.key === Qt.Key_Right) {
-                block.x += gameField.cellSize
+                block.right()
             }
             else if (event.key === Qt.Key_Down) {
                 // Drop
