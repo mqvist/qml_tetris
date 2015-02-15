@@ -16,7 +16,7 @@ function init(_gameField) {
                             'col' : j + 1,
                             'maxRow' : gameField.rows,
                             'cellSize' : gameField.cellSize,
-                            'color' : 'black'
+                            'visible' : false
                         });
         }
     }
@@ -29,6 +29,18 @@ function isCellFree(row, col) {
     else if (col < 1 || col > gameField.cols)
         return false;
     return !cells[row-1][col-1].visible;
+}
+
+function canBlockMove(block, rowDelta, colDelta) {
+    console.log('canBlockMove')
+    for (var i = 0; i < 4; i++) {
+        var cellOffset = block.cellOffsets[i];
+        var row = block.row + cellOffset[0] + rowDelta;
+        var col = block.col + cellOffset[1] + colDelta;
+        if (!isCellFree(row, col))
+            return false;
+    }
+    return true;
 }
 
 function fillCell(row, col, color) {
@@ -47,14 +59,3 @@ function fillCells(block) {
     }
 }
 
-function canBlockMove(block, rowDelta, colDelta) {
-    console.log('canBlockMove')
-    for (var i = 0; i < 4; i++) {
-        var cellOffset = block.cellOffsets[i];
-        var row = block.row + cellOffset[0] + rowDelta;
-        var col = block.col + cellOffset[1] + colDelta;
-        if (!isCellFree(row, col))
-            return false;
-    }
-    return true;
-}

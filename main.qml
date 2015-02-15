@@ -24,40 +24,32 @@ Window {
             property variant cellOffsets
             property string color
             Cell {
-                id: cell1
                 row: parent.row + parent.cellOffsets[0][0]
                 col: parent.col + parent.cellOffsets[0][1]
                 maxRow: gameField.rows
                 cellSize: gameField.cellSize
                 color: parent.color
-                visible: true
             }
             Cell {
-                id: cell2
                 row: parent.row + parent.cellOffsets[1][0]
                 col: parent.col + parent.cellOffsets[1][1]
                 maxRow: gameField.rows
                 cellSize: gameField.cellSize
                 color: parent.color
-                visible: true
             }
             Cell {
-                id: cell3
                 row: parent.row + parent.cellOffsets[2][0]
                 col: parent.col + parent.cellOffsets[2][1]
                 maxRow: gameField.rows
                 cellSize: gameField.cellSize
                 color: parent.color
-                visible: true
             }
             Cell {
-                id: cell4
                 row: parent.row + parent.cellOffsets[3][0]
                 col: parent.col + parent.cellOffsets[3][1]
                 maxRow: gameField.rows
                 cellSize: gameField.cellSize
                 color: parent.color
-                visible: true
             }
             states: [
                 State {
@@ -92,7 +84,6 @@ Window {
             Component.onCompleted: reset()
             Timer {
                 id: blockTimer
-                running: true
                 repeat: true
                 onTriggered: block.down()
             }
@@ -108,6 +99,7 @@ Window {
                 if (Game.canBlockMove(block, -1, 0))
                     row -= 1
                 else {
+                    blockTimer.running = false
                     Game.fillCells(block)
                     reset()
                 }
@@ -120,6 +112,7 @@ Window {
                 row = gameField.rows
                 state = states[Math.floor(Math.random() * states.length)].name
                 blockTimer.interval = 750
+                blockTimer.running = true
             }
         }
         Keys.onPressed: {

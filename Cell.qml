@@ -9,7 +9,6 @@ Item {
     property variant colors: ['red', 'green', 'blue', 'yellow', 'purple', 'cyan', 'orange']
     x: (col - 1) * cellSize
     y: (maxRow - row) * cellSize
-    visible: false
 
     Rectangle {
         id: rect
