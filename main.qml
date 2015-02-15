@@ -21,11 +21,12 @@ Window {
             id: block
             property int col: gameField.cols / 2
             property int row: gameField.rows
-            property string color: 'yellow'
-            state: 'I'
+            property variant cellOffsets
+            property string color
             Cell {
                 id: cell1
-                row: parent.row
+                row: parent.row + parent.cellOffsets[0][0]
+                col: parent.col + parent.cellOffsets[0][1]
                 maxRow: gameField.rows
                 cellSize: gameField.cellSize
                 color: parent.color
@@ -33,7 +34,8 @@ Window {
             }
             Cell {
                 id: cell2
-                row: parent.row
+                row: parent.row + parent.cellOffsets[1][0]
+                col: parent.col + parent.cellOffsets[1][1]
                 maxRow: gameField.rows
                 cellSize: gameField.cellSize
                 color: parent.color
@@ -41,7 +43,8 @@ Window {
             }
             Cell {
                 id: cell3
-                row: parent.row
+                row: parent.row + parent.cellOffsets[2][0]
+                col: parent.col + parent.cellOffsets[2][1]
                 maxRow: gameField.rows
                 cellSize: gameField.cellSize
                 color: parent.color
@@ -49,7 +52,8 @@ Window {
             }
             Cell {
                 id: cell4
-                row: parent.row
+                row: parent.row + parent.cellOffsets[3][0]
+                col: parent.col + parent.cellOffsets[3][1]
                 maxRow: gameField.rows
                 cellSize: gameField.cellSize
                 color: parent.color
@@ -58,82 +62,53 @@ Window {
             states: [
                 State {
                     name: 'I'
-                    PropertyChanges { target: block; color: 'light blue' }
-                    PropertyChanges { target: cell1; col: parent.col; row: parent.row }
-                    PropertyChanges { target: cell2; col: parent.col + 1; row: parent.row }
-                    PropertyChanges { target: cell3; col: parent.col + 2; row: parent.row }
-                    PropertyChanges { target: cell4; col: parent.col + 3; row: parent.row }
+                    PropertyChanges { target: block; color: 'cyan'; cellOffsets: [[0, 0], [0, 1], [0, 2], [0, 3]] }
                 },
                 State {
                     name: 'O';
-                    PropertyChanges { target: block; color: 'yellow' }
-                    PropertyChanges { target: cell1; col: parent.col; row: parent.row }
-                    PropertyChanges { target: cell2; col: parent.col + 1; row: parent.row }
-                    PropertyChanges { target: cell3; col: parent.col; row: parent.row + 1}
-                    PropertyChanges { target: cell4; col: parent.col + 1; row: parent.row + 1 }
+                    PropertyChanges { target: block; color: 'yellow'; cellOffsets: [[0, 0], [0, 1], [-1, 0], [-1, 1]] }
                 },
                 State {
                     name: 'T';
-                    PropertyChanges { target: block; color: 'purple' }
-                    PropertyChanges { target: cell1; col: parent.col; row: parent.row }
-                    PropertyChanges { target: cell2; col: parent.col + 1; row: parent.row }
-                    PropertyChanges { target: cell3; col: parent.col + 2; row: parent.row }
-                    PropertyChanges { target: cell4; col: parent.col + 1; row: parent.row + 1 }
+                    PropertyChanges { target: block; color: 'purple'; cellOffsets: [[0, 0], [0, 1], [0, 2], [-1, 1]] }
                 },
                 State {
                     name: 'J';
-                    PropertyChanges { target: block; color: 'blue' }
-                    PropertyChanges { target: cell1; col: parent.col; row: parent.row }
-                    PropertyChanges { target: cell2; col: parent.col + 1; row: parent.row }
-                    PropertyChanges { target: cell3; col: parent.col + 2; row: parent.row }
-                    PropertyChanges { target: cell4; col: parent.col + 2; row: parent.row + 1 }
+                    PropertyChanges { target: block; color: 'blue'; cellOffsets: [[0, 0], [0, 1], [0, 2], [-1, 2]] }
                 },
                 State {
                     name: 'L';
-                    PropertyChanges { target: block; color: 'orange' }
-                    PropertyChanges { target: cell1; col: parent.col; row: parent.row }
-                    PropertyChanges { target: cell2; col: parent.col + 1; row: parent.row }
-                    PropertyChanges { target: cell3; col: parent.col + 2; row: parent.row }
-                    PropertyChanges { target: cell4; col: parent.col; row: parent.row + 1 }
+                    PropertyChanges { target: block; color: 'orange'; cellOffsets: [[0, 0], [0, 1], [0, 2], [-1, 0]] }
                 },
                 State {
                     name: 'S';
-                    PropertyChanges { target: block; color: 'green' }
-                    PropertyChanges { target: cell1; col: parent.col + 1; row: parent.row }
-                    PropertyChanges { target: cell2; col: parent.col + 2; row: parent.row }
-                    PropertyChanges { target: cell3; col: parent.col; row: parent.row + 1 }
-                    PropertyChanges { target: cell4; col: parent.col + 1; row: parent.row + 1 }
+                    PropertyChanges { target: block; color: 'green'; cellOffsets: [[0, 1], [0, 2], [-1, 0], [-1, 1]] }
                 },
                 State {
                     name: 'Z';
-                    PropertyChanges { target: block; color: 'red' }
-                    PropertyChanges { target: cell1; col: parent.col; row: parent.row }
-                    PropertyChanges { target: cell2; col: parent.col + 1; row: parent.row }
-                    PropertyChanges { target: cell3; col: parent.col + 1; row: parent.row + 1 }
-                    PropertyChanges { target: cell4; col: parent.col + 2; row: parent.row + 1 }
+                    PropertyChanges { target: block; color: 'red'; cellOffsets: [[0, 0], [0, 1], [-1, 1], [-1, 2]] }
                 }
             ]
-
+            Component.onCompleted: reset()
             Timer {
                 id: blockTimer
-                interval: 1000
                 running: true
                 repeat: true
                 onTriggered: block.down()
             }
             function left() {
-                if (col > 1 && Game.isCellFree(row, col - 1))
+                if (Game.canBlockMove(block, 0, -1))
                     col -= 1
             }
             function right() {
-                if (col < gameField.cols && Game.isCellFree(row, col + 1))
+                if (Game.canBlockMove(block, 0, 1))
                     col += 1
             }
             function down() {
-                if (row > 1 && Game.isCellFree(row - 1, col))
+                if (Game.canBlockMove(block, -1, 0))
                     row -= 1
                 else {
-                    Game.fillCell(row, col, color)
+                    Game.fillCells(block)
                     reset()
                 }
             }
@@ -144,7 +119,7 @@ Window {
                 col = gameField.cols / 2
                 row = gameField.rows
                 state = states[Math.floor(Math.random() * states.length)].name
-                blockTimer.interval = 1000
+                blockTimer.interval = 750
             }
         }
         Keys.onPressed: {
