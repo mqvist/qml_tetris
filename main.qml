@@ -33,11 +33,11 @@ Window {
                 onTriggered: block.down()
             }
             function left() {
-                if (col > 1)
+                if (col > 1 && Game.isCellFree(row, col - 1))
                     col -= 1
             }
             function right() {
-                if (col < gameField.cols)
+                if (col < gameField.cols && Game.isCellFree(row, col + 1))
                     col += 1
             }
             function down() {
@@ -54,6 +54,7 @@ Window {
             function reset() {
                 col = gameField.cols / 2
                 row = gameField.rows
+                color = colors[Math.floor(Math.random() * colors.length)]
                 blockTimer.interval = 1000
             }
         }
