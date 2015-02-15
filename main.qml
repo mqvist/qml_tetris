@@ -7,7 +7,7 @@ Window {
     height: 400
 
     Rectangle {
-        id: gameArea
+        id: gameField
         property int cellSize: 20
         property int cellsX: 10
         property int cellsY: 20
@@ -18,10 +18,10 @@ Window {
 
         Item {
             id: block
-            x: gameArea.cellsX / 2 * gameArea.cellSize
+            x: gameField.cellsX / 2 * gameField.cellSize
             Rectangle {
-                width: gameArea.cellSize
-                height: gameArea.cellSize
+                width: gameField.cellSize
+                height: gameField.cellSize
                 color: 'yellow'
             }
         }
@@ -30,23 +30,23 @@ Window {
             interval: 1000
             running: true
             repeat: true
-            onTriggered: block.y += gameArea.cellSize
+            onTriggered: block.y += gameField.cellSize
         }
         Keys.onPressed: {
-            if (event.key == Qt.Key_Left) {
-                block.x -= gameArea.cellSize
+            if (event.key === Qt.Key_Left) {
+                block.x -= gameField.cellSize
             }
-            else if (event.key == Qt.Key_Right) {
-                block.x += gameArea.cellSize
+            else if (event.key === Qt.Key_Right) {
+                block.x += gameField.cellSize
             }
-            else if (event.key == Qt.Key_Down) {
+            else if (event.key === Qt.Key_Down) {
                 // Drop
                 tick.interval = 10
             }
         }
     }
     Text {
-        anchors.left: gameArea.right
+        anchors.left: gameField.right
         text: 'SCORE: '
     }
 }
