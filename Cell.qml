@@ -15,5 +15,7 @@ Item {
         id: rect
         width: parent.cellSize
         height: parent.cellSize
+        border.width: 1
+        radius: parent.cellSize / 10
     }
 }
