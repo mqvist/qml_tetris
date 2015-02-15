@@ -39,13 +39,17 @@ Window {
                 if (row > 1)
                     row -= 1
             }
-        }
-        Timer {
-            id: tick
-            interval: 1000
-            running: true
-            repeat: true
-            onTriggered: block.down()
+            function drop() {
+                blockTimer.interval = 10
+            }
+
+            Timer {
+                id: blockTimer
+                interval: 1000
+                running: true
+                repeat: true
+                onTriggered: block.down()
+            }
         }
         Keys.onPressed: {
             if (event.key === Qt.Key_Left) {
@@ -55,8 +59,7 @@ Window {
                 block.right()
             }
             else if (event.key === Qt.Key_Down) {
-                // Drop
-                tick.interval = 10
+                block.drop()
             }
         }
     }
