@@ -100,7 +100,7 @@ Window {
                     row -= 1
                 else {
                     blockTimer.running = false
-                    Game.fillCells(block)
+                    Game.freezeBlock(block)
                     reset()
                 }
             }

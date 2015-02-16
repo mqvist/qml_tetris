@@ -23,7 +23,7 @@ function init(_gameField) {
 }
 
 function isCellFree(row, col) {
-    console.log("isCellFree", row, col);
+    //console.debug("isCellFree", row, col);
     if (row < 1 || row > gameField.rows)
         return false;
     else if (col < 1 || col > gameField.cols)
@@ -49,8 +49,8 @@ function fillCell(row, col, color) {
     cells[row-1][col-1].visible = true;
 }
 
-function fillCells(block) {
-    console.log('fillCells');
+function freezeBlock(block) {
+    console.debug('fixBlock');
     for (var i = 0; i < 4; i++) {
         var cellOffset = block.cellOffsets[i];
         var row = block.row + cellOffset[0];
