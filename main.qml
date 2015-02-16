@@ -12,6 +12,7 @@ Window {
         property int cellSize: 20
         property int cols: 10
         property int rows: 20
+        property int score: 0
         width: cellSize * cols
         height: cellSize * rows
         color: 'black'
@@ -161,17 +162,33 @@ Window {
             else if (event.key === Qt.Key_Right) {
                 block.right()
             }
-            else if (event.key === Qt.Key_Down) {
+            else if (event.key === Qt.Key_Space) {
                 block.drop()
             }
             else if (event.key === Qt.Key_Up) {
                 block.rotate()
             }
         }
+        function scoreKilledRows(rows) {
+            switch (rows) {
+            case 1:
+                score += 40
+                break
+            case 2:
+                score += 100
+                break
+            case 3:
+                score += 300
+                break
+            case 4:
+                score += 1200
+                break
+            }
+        }
     }
     Text {
         anchors.left: gameField.right
-        text: 'SCORE: '
+        text: 'SCORE: ' + gameField.score
     }
     Component.onCompleted: Game.init(gameField);
 }
