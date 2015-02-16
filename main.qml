@@ -13,6 +13,8 @@ Window {
         property int cols: 10
         property int rows: 20
         property int score: 0
+        property int totalRowsKilled: 0
+        property int level: totalRowsKilled / 10
         width: cellSize * cols
         height: cellSize * rows
         color: 'black'
@@ -151,7 +153,7 @@ Window {
                 row = gameField.rows
                 cellOffsetListIndex = 0
                 state = states[Math.floor(Math.random() * states.length)].name
-                blockTimer.interval = 750
+                blockTimer.interval = 1000 - gameField.level * 100
                 blockTimer.running = true
             }
         }
@@ -172,23 +174,35 @@ Window {
         function scoreKilledRows(rows) {
             switch (rows) {
             case 1:
-                score += 40
+                score += 40 * (level + 1)
                 break
             case 2:
-                score += 100
+                score += 100 * (level + 1)
                 break
             case 3:
-                score += 300
+                score += 300 * (level + 1)
                 break
             case 4:
-                score += 1200
+                score += 1200 * (level + 1)
                 break
             }
+            totalRowsKilled += rows
         }
     }
-    Text {
+    Column {
         anchors.left: gameField.right
-        text: 'SCORE: ' + gameField.score
+        Text {
+            text: 'SCORE: ' + gameField.score
+        }
+        Text {
+            text: 'LEVEL: ' + gameField.level
+        }
+        Text {
+            text: 'ROWS: ' + gameField.totalRowsKilled
+        }
+        Text {
+            text: 'SPEED: ' + blockTimer.interval
+        }
     }
     Component.onCompleted: Game.init(gameField);
 }
