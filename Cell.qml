@@ -6,7 +6,6 @@ Item {
     property int maxRow
     property int cellSize
     property alias color: rect.color
-    property variant colors: ['red', 'green', 'blue', 'yellow', 'purple', 'cyan', 'orange']
     x: (col - 1) * cellSize
     y: (maxRow - row) * cellSize
 

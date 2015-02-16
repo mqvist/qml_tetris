@@ -21,7 +21,9 @@ Window {
             id: block
             property int col: gameField.cols / 2
             property int row: gameField.rows
-            property variant cellOffsets
+            property var cellOffsetList
+            property int cellOffsetListIndex
+            property var cellOffsets: cellOffsetList[cellOffsetListIndex]
             property string color
             Cell {
                 row: parent.row + parent.cellOffsets[0][0]
@@ -54,31 +56,59 @@ Window {
             states: [
                 State {
                     name: 'I'
-                    PropertyChanges { target: block; color: 'cyan'; cellOffsets: [[0, 0], [0, 1], [0, 2], [0, 3]] }
+                    PropertyChanges {
+                        target: block
+                        color: 'cyan'
+                        cellOffsetList: [[[0, 0], [0, 1], [0, 2], [0, 3]], [[1, 1], [0, 1], [-1, 1], [-2, 1]]]
+                    }
                 },
                 State {
                     name: 'O';
-                    PropertyChanges { target: block; color: 'yellow'; cellOffsets: [[0, 0], [0, 1], [-1, 0], [-1, 1]] }
+                    PropertyChanges {
+                        target: block
+                        color: 'yellow'
+                        cellOffsetList: [[[0, 0], [0, 1], [-1, 0], [-1, 1]]]
+                    }
                 },
                 State {
                     name: 'T';
-                    PropertyChanges { target: block; color: 'purple'; cellOffsets: [[0, 0], [0, 1], [0, 2], [-1, 1]] }
+                    PropertyChanges {
+                        target: block
+                        color: 'purple'
+                        cellOffsetList: [[[0, 0], [0, 1], [0, 2], [-1, 1]], [[0, 2], [0, 1], [1, 1], [-1, 1]], [[0, 0], [0, 1], [0, 2], [1, 1]], [[0, 0], [0, 1], [1, 1], [-1, 1]]]
+                    }
                 },
                 State {
                     name: 'J';
-                    PropertyChanges { target: block; color: 'blue'; cellOffsets: [[0, 0], [0, 1], [0, 2], [-1, 2]] }
+                    PropertyChanges {
+                        target: block
+                        color: 'blue'
+                        cellOffsetList: [[[0, 0], [0, 1], [0, 2], [-1, 2]], [[1, 1], [0, 1], [-1, 1], [1, 2]], [[0, 0], [0, 1], [0, 2], [1, 0]], [[1, 1], [0, 1], [-1, 1], [-1, 0]]]
+                    }
                 },
                 State {
                     name: 'L';
-                    PropertyChanges { target: block; color: 'orange'; cellOffsets: [[0, 0], [0, 1], [0, 2], [-1, 0]] }
+                    PropertyChanges {
+                        target: block
+                        color: 'orange'
+                        cellOffsetList: [[[0, 0], [0, 1], [0, 2], [-1, 0]], [[1, 1], [0, 1], [-1, 1], [-1, 2]], [[0, 0], [0, 1], [0, 2], [1, 2]], [[1, 1], [0, 1], [-1, 1], [1, 0]]]
+                    }
                 },
                 State {
                     name: 'S';
-                    PropertyChanges { target: block; color: 'green'; cellOffsets: [[0, 1], [0, 2], [-1, 0], [-1, 1]] }
+                    PropertyChanges {
+                        target: block
+                        color: 'green'
+                        cellOffsetList: [[[0, 1], [0, 2], [-1, 0], [-1, 1]], [[0, 1], [0, 2], [1, 1], [-1, 2]]]
+                    }
                 },
                 State {
                     name: 'Z';
-                    PropertyChanges { target: block; color: 'red'; cellOffsets: [[0, 0], [0, 1], [-1, 1], [-1, 2]] }
+                    PropertyChanges {
+                        target: block
+                        color: 'red'
+                        cellOffsetList: [[[0, 0], [0, 1], [-1, 1], [-1, 2]], [[0, 0], [0, 1], [-1, 0], [1, 1]]]
+                    }
                 }
             ]
             Component.onCompleted: reset()
@@ -107,9 +137,18 @@ Window {
             function drop() {
                 blockTimer.interval = 10
             }
+            function rotate() {
+                var oldIndex = block.cellOffsetListIndex
+                var index = block.cellOffsetListIndex + 1
+                index %= block.cellOffsetList.length
+                block.cellOffsetListIndex = index
+                if (!Game.canBlockMove(block, 0, 0))
+                    block.cellOffsetListIndex = oldIndex
+            }
             function reset() {
                 col = gameField.cols / 2
                 row = gameField.rows
+                cellOffsetListIndex = 0
                 state = states[Math.floor(Math.random() * states.length)].name
                 blockTimer.interval = 750
                 blockTimer.running = true
@@ -124,6 +163,9 @@ Window {
             }
             else if (event.key === Qt.Key_Down) {
                 block.drop()
+            }
+            else if (event.key === Qt.Key_Up) {
+                block.rotate()
             }
         }
     }
