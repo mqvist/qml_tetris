@@ -153,8 +153,10 @@ Window {
                 row = gameField.rows
                 cellOffsetListIndex = 0
                 state = states[Math.floor(Math.random() * states.length)].name
-                blockTimer.interval = 1000 - gameField.level * 100
-                blockTimer.running = true
+                if (Game.canBlockMove(block, 0, 0)) {
+                    blockTimer.interval = 1000 * Math.pow(4.0/5.0, gameField.level)
+                    blockTimer.running = true
+                }
             }
         }
         Keys.onPressed: {
