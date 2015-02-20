@@ -19,6 +19,7 @@ Window {
         height: cellSize * rows
         color: 'black'
         focus: true
+        signal rowsKilled (int rows)
         Block {
             id: gameBlock
             Component.onCompleted: reset()
@@ -77,22 +78,9 @@ Window {
                 gameBlock.rotate()
             }
         }
-        function scoreKilledRows(rows) {
-            switch (rows) {
-            case 1:
-                score += 40 * (level + 1)
-                break
-            case 2:
-                score += 100 * (level + 1)
-                break
-            case 3:
-                score += 300 * (level + 1)
-                break
-            case 4:
-                score += 1200 * (level + 1)
-                break
-            }
+        onRowsKilled: {
             totalRowsKilled += rows
+            score += Game.scoreKilledRows(level, rows)
         }
     }
     Column {

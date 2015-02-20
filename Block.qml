@@ -104,5 +104,4 @@ Item {
         index %= block.cellOffsetList.length
         cellOffsetListIndex = index
     }
-
 }

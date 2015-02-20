@@ -87,6 +87,20 @@ function freezeBlock(block) {
             i++;
     }
     if (rowsKilled)
-        gameField.scoreKilledRows(rowsKilled);
+        gameField.rowsKilled(rowsKilled);
 }
+
+function scoreKilledRows(level, rows) {
+    switch (rows) {
+    case 1:
+        return 40 * (level + 1);
+    case 2:
+        return 100 * (level + 1);
+    case 3:
+        return 300 * (level + 1);
+    case 4:
+        return 1200 * (level + 1);
+    }
+}
+
 
