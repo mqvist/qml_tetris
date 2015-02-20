@@ -19,121 +19,28 @@ Window {
         height: cellSize * rows
         color: 'black'
         focus: true
-
-        Item {
-            id: block
-            property int col: gameField.cols / 2
-            property int row: gameField.rows
-            property var cellOffsetList
-            property int cellOffsetListIndex
-            property var cellOffsets: cellOffsetList[cellOffsetListIndex]
-            property string color
-            Cell {
-                row: parent.row + parent.cellOffsets[0][0]
-                col: parent.col + parent.cellOffsets[0][1]
-                maxRow: gameField.rows
-                cellSize: gameField.cellSize
-                color: parent.color
-            }
-            Cell {
-                row: parent.row + parent.cellOffsets[1][0]
-                col: parent.col + parent.cellOffsets[1][1]
-                maxRow: gameField.rows
-                cellSize: gameField.cellSize
-                color: parent.color
-            }
-            Cell {
-                row: parent.row + parent.cellOffsets[2][0]
-                col: parent.col + parent.cellOffsets[2][1]
-                maxRow: gameField.rows
-                cellSize: gameField.cellSize
-                color: parent.color
-            }
-            Cell {
-                row: parent.row + parent.cellOffsets[3][0]
-                col: parent.col + parent.cellOffsets[3][1]
-                maxRow: gameField.rows
-                cellSize: gameField.cellSize
-                color: parent.color
-            }
-            states: [
-                State {
-                    name: 'I'
-                    PropertyChanges {
-                        target: block
-                        color: 'cyan'
-                        cellOffsetList: [[[0, 0], [0, 1], [0, 2], [0, 3]], [[1, 1], [0, 1], [-1, 1], [-2, 1]]]
-                    }
-                },
-                State {
-                    name: 'O';
-                    PropertyChanges {
-                        target: block
-                        color: 'yellow'
-                        cellOffsetList: [[[0, 0], [0, 1], [-1, 0], [-1, 1]]]
-                    }
-                },
-                State {
-                    name: 'T';
-                    PropertyChanges {
-                        target: block
-                        color: 'purple'
-                        cellOffsetList: [[[0, 0], [0, 1], [0, 2], [-1, 1]], [[0, 2], [0, 1], [1, 1], [-1, 1]], [[0, 0], [0, 1], [0, 2], [1, 1]], [[0, 0], [0, 1], [1, 1], [-1, 1]]]
-                    }
-                },
-                State {
-                    name: 'J';
-                    PropertyChanges {
-                        target: block
-                        color: 'blue'
-                        cellOffsetList: [[[0, 0], [0, 1], [0, 2], [-1, 2]], [[1, 1], [0, 1], [-1, 1], [1, 2]], [[0, 0], [0, 1], [0, 2], [1, 0]], [[1, 1], [0, 1], [-1, 1], [-1, 0]]]
-                    }
-                },
-                State {
-                    name: 'L';
-                    PropertyChanges {
-                        target: block
-                        color: 'orange'
-                        cellOffsetList: [[[0, 0], [0, 1], [0, 2], [-1, 0]], [[1, 1], [0, 1], [-1, 1], [-1, 2]], [[0, 0], [0, 1], [0, 2], [1, 2]], [[1, 1], [0, 1], [-1, 1], [1, 0]]]
-                    }
-                },
-                State {
-                    name: 'S';
-                    PropertyChanges {
-                        target: block
-                        color: 'green'
-                        cellOffsetList: [[[0, 1], [0, 2], [-1, 0], [-1, 1]], [[0, 1], [0, 2], [1, 1], [-1, 2]]]
-                    }
-                },
-                State {
-                    name: 'Z';
-                    PropertyChanges {
-                        target: block
-                        color: 'red'
-                        cellOffsetList: [[[0, 0], [0, 1], [-1, 1], [-1, 2]], [[0, 0], [0, 1], [-1, 0], [1, 1]]]
-                    }
-                }
-            ]
+        Block {
+            id: gameBlock
             Component.onCompleted: reset()
             Timer {
                 id: blockTimer
                 repeat: true
-                onTriggered: block.down()
+                onTriggered: gameBlock.down()
             }
             function left() {
-                if (Game.canBlockMove(block, 0, -1))
+                if (Game.canBlockMove(gameBlock, 0, -1))
                     col -= 1
             }
             function right() {
-                if (Game.canBlockMove(block, 0, 1))
+                if (Game.canBlockMove(gameBlock, 0, 1))
                     col += 1
             }
             function down() {
-                if (Game.canBlockMove(block, -1, 0))
+                if (Game.canBlockMove(gameBlock, -1, 0))
                     row -= 1
                 else {
                     blockTimer.running = false
-                    Game.freezeBlock(block)
+                    Game.freezeBlock(gameBlock)
                     reset()
                 }
             }
@@ -141,19 +48,16 @@ Window {
                 blockTimer.interval = 10
             }
             function rotate() {
-                var oldIndex = block.cellOffsetListIndex
-                var index = block.cellOffsetListIndex + 1
-                index %= block.cellOffsetList.length
-                block.cellOffsetListIndex = index
-                if (!Game.canBlockMove(block, 0, 0))
-                    block.cellOffsetListIndex = oldIndex
+                rotateCCW()
+                if (!Game.canBlockMove(gameBlock, 0, 0))
+                    rotateCW()
             }
             function reset() {
                 col = gameField.cols / 2
                 row = gameField.rows
                 cellOffsetListIndex = 0
                 state = states[Math.floor(Math.random() * states.length)].name
-                if (Game.canBlockMove(block, 0, 0)) {
+                if (Game.canBlockMove(gameBlock, 0, 0)) {
                     blockTimer.interval = 1000 * Math.pow(4.0/5.0, gameField.level)
                     blockTimer.running = true
                 }
@@ -161,16 +65,16 @@ Window {
         }
         Keys.onPressed: {
             if (event.key === Qt.Key_Left) {
-                block.left()
+                gameBlock.left()
             }
             else if (event.key === Qt.Key_Right) {
-                block.right()
+                gameBlock.right()
             }
             else if (event.key === Qt.Key_Space) {
-                block.drop()
+                gameBlock.drop()
             }
             else if (event.key === Qt.Key_Up) {
-                block.rotate()
+                gameBlock.rotate()
             }
         }
         function scoreKilledRows(rows) {
