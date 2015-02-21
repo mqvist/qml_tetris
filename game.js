@@ -29,12 +29,12 @@ function init(_gameField) {
 
 function isCellFree(row, col) {
     //console.debug("isCellFree", row, col);
-    if (row < 1)
+    if (row > gameField.rows)
         return false;
-    else if (row > gameField.rows)
-        return true;
     else if (col < 1 || col > gameField.cols)
         return false;
+    else if (row < 1)
+        return true;
     return !cells[row-1][col-1].visible;
 }
 
@@ -52,11 +52,11 @@ function canBlockMove(block, rowDelta, colDelta) {
 
 function killRow(row) {
     console.log('killRow', row);
-    for (var i = row - 1; i < gameField.rows - 1; i++) {
+    for (var i = row - 1; i > 0; i--) {
         for (var j = 0; j < gameField.cols; j++) {
-            cells[i][j].color = cells[i+1][j].color;
-            cells[i][j].visible = cells[i+1][j].visible;
-            rowCounts[i] = rowCounts[i+1];
+            cells[i][j].color = cells[i-1][j].color;
+            cells[i][j].visible = cells[i-1][j].visible;
+            rowCounts[i] = rowCounts[i-1];
         }
     }
 }
@@ -78,13 +78,13 @@ function freezeBlock(block) {
     }
     // Check for full rows
     var rowsKilled = 0;
-    for (i = 0; i < gameField.rows;) {
-        if (rowCounts[i] === gameField.cols) {
-            killRow(i + 1);
+    for (row = gameField.rows; row >= 1;) {
+        if (rowCounts[row-1] === gameField.cols) {
+            killRow(row);
             rowsKilled += 1;
         }
         else
-            i++;
+            row--;
     }
     if (rowsKilled)
         gameField.rowsKilled(rowsKilled);

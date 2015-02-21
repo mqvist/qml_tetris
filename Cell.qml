@@ -7,7 +7,7 @@ Item {
     property int cellSize
     property alias color: rect.color
     x: (col - 1) * cellSize
-    y: (maxRow - row) * cellSize
+    y: (row - 1) * cellSize
 
     Rectangle {
         id: rect

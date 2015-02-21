@@ -8,6 +8,10 @@ Item {
     property int cellOffsetListIndex: 0
     property var cellOffsets: cellOffsetList[cellOffsetListIndex]
     property string color
+    width: gameField.cellSize * (1 + Math.max(cellOffsets[0][1], cellOffsets[1][1], cellOffsets[2][1], cellOffsets[3][1]))
+    height: gameField.cellSize * (1 + Math.max(cellOffsets[0][0], cellOffsets[1][0], cellOffsets[2][0], cellOffsets[3][0]))
+
+
     Cell {
         row: parent.row + parent.cellOffsets[0][0]
         col: parent.col + parent.cellOffsets[0][1]
@@ -42,7 +46,7 @@ Item {
             PropertyChanges {
                 target: block
                 color: 'cyan'
-                cellOffsetList: [[[0, 0], [0, 1], [0, 2], [0, 3]], [[1, 1], [0, 1], [-1, 1], [-2, 1]]]
+                cellOffsetList: [[[0, 0], [0, 1], [0, 2], [0, 3]], [[-1, 1], [0, 1], [1, 1], [2, 1]]]
             }
         },
         State {
@@ -50,7 +54,7 @@ Item {
             PropertyChanges {
                 target: block
                 color: 'yellow'
-                cellOffsetList: [[[0, 0], [0, 1], [-1, 0], [-1, 1]]]
+                cellOffsetList: [[[0, 0], [0, 1], [1, 0], [1, 1]]]
             }
         },
         State {
@@ -58,7 +62,7 @@ Item {
             PropertyChanges {
                 target: block
                 color: 'purple'
-                cellOffsetList: [[[0, 0], [0, 1], [0, 2], [-1, 1]], [[0, 2], [0, 1], [1, 1], [-1, 1]], [[0, 0], [0, 1], [0, 2], [1, 1]], [[0, 0], [0, 1], [1, 1], [-1, 1]]]
+                cellOffsetList: [[[0, 0], [0, 1], [0, 2], [1, 1]], [[0, 2], [0, 1], [-1, 1], [1, 1]], [[0, 0], [0, 1], [0, 2], [-1, 1]], [[0, 0], [0, 1], [-1, 1], [1, 1]]]
             }
         },
         State {
@@ -66,7 +70,7 @@ Item {
             PropertyChanges {
                 target: block
                 color: 'blue'
-                cellOffsetList: [[[0, 0], [0, 1], [0, 2], [-1, 2]], [[1, 1], [0, 1], [-1, 1], [1, 2]], [[0, 0], [0, 1], [0, 2], [1, 0]], [[1, 1], [0, 1], [-1, 1], [-1, 0]]]
+                cellOffsetList: [[[0, 0], [0, 1], [0, 2], [1, 2]], [[-1, 1], [0, 1], [1, 1], [-1, 2]], [[0, 0], [0, 1], [0, 2], [-1, 0]], [[-1, 1], [0, 1], [1, 1], [1, 0]]]
             }
         },
         State {
@@ -74,7 +78,7 @@ Item {
             PropertyChanges {
                 target: block
                 color: 'orange'
-                cellOffsetList: [[[0, 0], [0, 1], [0, 2], [-1, 0]], [[1, 1], [0, 1], [-1, 1], [-1, 2]], [[0, 0], [0, 1], [0, 2], [1, 2]], [[1, 1], [0, 1], [-1, 1], [1, 0]]]
+                cellOffsetList: [[[0, 0], [0, 1], [0, 2], [1, 0]], [[-1, 1], [0, 1], [1, 1], [1, 2]], [[0, 0], [0, 1], [0, 2], [-1, 2]], [[1, 1], [0, 1], [-1, 1], [-1, 0]]]
             }
         },
         State {
@@ -82,7 +86,7 @@ Item {
             PropertyChanges {
                 target: block
                 color: 'green'
-                cellOffsetList: [[[0, 1], [0, 2], [-1, 0], [-1, 1]], [[0, 1], [0, 2], [1, 1], [-1, 2]]]
+                cellOffsetList: [[[0, 1], [0, 2], [1, 0], [1, 1]], [[0, 1], [0, 2], [-1, 1], [1, 2]]]
             }
         },
         State {
@@ -90,7 +94,7 @@ Item {
             PropertyChanges {
                 target: block
                 color: 'red'
-                cellOffsetList: [[[0, 0], [0, 1], [-1, 1], [-1, 2]], [[0, 0], [0, 1], [-1, 0], [1, 1]]]
+                cellOffsetList: [[[0, 0], [0, 1], [1, 1], [1, 2]], [[0, 0], [0, 1], [1, 0], [-1, 1]]]
             }
         }
     ]

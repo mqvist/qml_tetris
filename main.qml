@@ -39,8 +39,8 @@ Window {
                     col += 1
             }
             function down() {
-                if (Game.canBlockMove(gameBlock, -1, 0))
-                    row -= 1
+                if (Game.canBlockMove(gameBlock, 1, 0))
+                    row += 1
                 else {
                     blockTimer.running = false
                     Game.freezeBlock(gameBlock)
@@ -57,10 +57,10 @@ Window {
             }
             function reset() {
                 col = gameField.cols / 2
-                row = gameField.rows
+                row = 1
                 cellOffsetListIndex = 0
                 state = nextBlock.state
-                nextBlock.state = states[Math.floor(Math.random() * states.length)].name
+                nextBlock.random()
                 if (Game.canBlockMove(gameBlock, 0, 0)) {
                     blockTimer.interval = 1000 * Math.pow(4.0/5.0, gameField.level)
                     blockTimer.running = true
@@ -129,26 +129,42 @@ Window {
             border.width: 2
             radius: 10
             Layout.fillWidth: true
+            Layout.preferredHeight: 80
+            Text {
+                id: next
+                text: 'NEXT'
+                anchors.top: parent.top
+                anchors.topMargin: 5
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: 'white'
+            }
+            Block {
+                id: nextBlock
+                col: 1
+                row: 1
+                anchors.centerIn: parent
+                anchors.verticalCenterOffset: 5
+                Component.onCompleted: random()
+                function random() {
+                    console.log(width, height)
+                    cellOffsetListIndex = 0
+                    state = states[Math.floor(Math.random() * states.length)].name
+                }
+            }
+        }
+        Rectangle {
+            color: 'black'
+            border.color: 'blue'
+            border.width: 2
+            radius: 10
+            Layout.fillWidth: true
             Layout.fillHeight: true
-            Column {
-                anchors.fill: parent
-                anchors.margins: 5
-                Text {
-                    text: 'NEXT'
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    color: 'white'
-                }
-                Block {
-                    id: nextBlock
-                    col: 1
-                    row: 19
-                    Component.onCompleted: reset()
-                    function reset() {
-                        cellOffsetListIndex = 0
-                        state = states[Math.floor(Math.random() * states.length)].name
-                    }
-                }
-
+            Text {
+                text: 'HIGHSCORES'
+                anchors.top: parent.top
+                anchors.topMargin: 5
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: 'white'
             }
         }
     }
