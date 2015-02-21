@@ -21,6 +21,7 @@ Window {
         height: cellSize * rows
         color: 'black'
         focus: true
+        state: 'RUNNING'
         signal rowsKilled (int rows)
         Block {
             id: gameBlock
@@ -65,9 +66,13 @@ Window {
                     blockTimer.interval = 1000 * Math.pow(4.0/5.0, gameField.level)
                     blockTimer.running = true
                 }
+                else
+                    gameField.state = 'GAMEOVER'
             }
         }
         Keys.onPressed: {
+            if (state !== 'RUNNING')
+                return
             if (event.key === Qt.Key_Left) {
                 gameBlock.left()
             }
@@ -88,6 +93,25 @@ Window {
             totalRowsKilled += rows
             score += Game.scoreKilledRows(level, rows)
         }
+        Text {
+            id: gameOverText
+            text: "Game Over"
+            font.pointSize: 32
+            style: Text.Outline
+            anchors.centerIn: parent
+            color: 'white'
+            z: 10
+        }
+        states: [
+            State {
+                name: 'RUNNING'
+                PropertyChanges { target: gameOverText; visible: false }
+            },
+            State {
+                name: 'GAMEOVER'
+                PropertyChanges { target: gameOverText; visible: true }
+            }
+        ]
     }
     ColumnLayout {
         spacing: 2
@@ -107,18 +131,22 @@ Window {
                 anchors.margins: 5
                 Text {
                     text: 'SCORE: ' + gameField.score
+                    anchors.horizontalCenter: parent.horizontalCenter
                     color: 'white'
                 }
                 Text {
                     text: 'LEVEL: ' + gameField.level
+                    anchors.horizontalCenter: parent.horizontalCenter
                     color: 'white'
                 }
                 Text {
                     text: 'ROWS: ' + gameField.totalRowsKilled
+                    anchors.horizontalCenter: parent.horizontalCenter
                     color: 'white'
                 }
                 Text {
                     text: 'SPEED: ' + blockTimer.interval
+                    anchors.horizontalCenter: parent.horizontalCenter
                     color: 'white'
                 }
             }
@@ -146,7 +174,6 @@ Window {
                 anchors.verticalCenterOffset: 5
                 Component.onCompleted: random()
                 function random() {
-                    console.log(width, height)
                     cellOffsetListIndex = 0
                     state = states[Math.floor(Math.random() * states.length)].name
                 }
