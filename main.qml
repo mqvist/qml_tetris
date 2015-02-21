@@ -1,11 +1,13 @@
 import QtQuick 2.3
 import QtQuick.Window 2.2
+import QtQuick.Layouts 1.1
 import "game.js" as Game
 
 Window {
     visible: true
     width: 300
     height: 400
+    color: 'black'
 
     Rectangle {
         id: gameField
@@ -57,7 +59,8 @@ Window {
                 col = gameField.cols / 2
                 row = gameField.rows
                 cellOffsetListIndex = 0
-                state = states[Math.floor(Math.random() * states.length)].name
+                state = nextBlock.state
+                nextBlock.state = states[Math.floor(Math.random() * states.length)].name
                 if (Game.canBlockMove(gameBlock, 0, 0)) {
                     blockTimer.interval = 1000 * Math.pow(4.0/5.0, gameField.level)
                     blockTimer.running = true
@@ -71,6 +74,9 @@ Window {
             else if (event.key === Qt.Key_Right) {
                 gameBlock.right()
             }
+            else if (event.key === Qt.Key_Down) {
+                gameBlock.down()
+            }
             else if (event.key === Qt.Key_Space) {
                 gameBlock.drop()
             }
@@ -83,19 +89,67 @@ Window {
             score += Game.scoreKilledRows(level, rows)
         }
     }
-    Column {
+    ColumnLayout {
+        spacing: 2
         anchors.left: gameField.right
-        Text {
-            text: 'SCORE: ' + gameField.score
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        Rectangle {
+            color: 'black'
+            border.color: 'blue'
+            border.width: 2
+            radius: 10
+            Layout.fillWidth: true
+            Layout.preferredHeight: 80
+            Column {
+                anchors.fill: parent
+                anchors.margins: 5
+                Text {
+                    text: 'SCORE: ' + gameField.score
+                    color: 'white'
+                }
+                Text {
+                    text: 'LEVEL: ' + gameField.level
+                    color: 'white'
+                }
+                Text {
+                    text: 'ROWS: ' + gameField.totalRowsKilled
+                    color: 'white'
+                }
+                Text {
+                    text: 'SPEED: ' + blockTimer.interval
+                    color: 'white'
+                }
+            }
         }
-        Text {
-            text: 'LEVEL: ' + gameField.level
-        }
-        Text {
-            text: 'ROWS: ' + gameField.totalRowsKilled
-        }
-        Text {
-            text: 'SPEED: ' + blockTimer.interval
+        Rectangle {
+            color: 'black'
+            border.color: 'blue'
+            border.width: 2
+            radius: 10
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Column {
+                anchors.fill: parent
+                anchors.margins: 5
+                Text {
+                    text: 'NEXT'
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    color: 'white'
+                }
+                Block {
+                    id: nextBlock
+                    col: 1
+                    row: 19
+                    Component.onCompleted: reset()
+                    function reset() {
+                        cellOffsetListIndex = 0
+                        state = states[Math.floor(Math.random() * states.length)].name
+                    }
+                }
+
+            }
         }
     }
     Component.onCompleted: Game.init(gameField);
