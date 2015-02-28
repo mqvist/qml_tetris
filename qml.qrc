@@ -4,5 +4,6 @@
         <file>game.js</file>
         <file>Cell.qml</file>
         <file>Block.qml</file>
+        <file>GameBlock.qml</file>
     </qresource>
 </RCC>

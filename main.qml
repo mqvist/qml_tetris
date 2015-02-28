@@ -25,60 +25,12 @@ Window {
 
         signal rowsKilled (int rows)
 
-        Block {
+        GameBlock {
             id: gameBlock
-            Component.onCompleted: reset()
-            Timer {
-                id: blockTimer
-                repeat: true
-                onTriggered: gameBlock.down()
-            }
-            function left() {
-                if (Game.canBlockMove(gameBlock, 0, -1))
-                    col -= 1
-            }
-            function right() {
-                if (Game.canBlockMove(gameBlock, 0, 1))
-                    col += 1
-            }
-            function down() {
-                if (Game.canBlockMove(gameBlock, 1, 0)) {
-                    row += 1
-                }
-                else {
-                    stop()
-                    Game.freezeBlock(gameBlock)
-                    reset()
-                }
-            }
-            function drop() {
-                blockTimer.interval = 10
-            }
-            function rotate() {
-                rotateCCW()
-                if (!Game.canBlockMove(gameBlock, 0, 0))
-                    rotateCW()
-            }
-            function stop() {
-                blockTimer.running = false
-            }
-            function restart() {
-                blockTimer.restart()
-            }
-            function reset() {
-                col = gameField.cols / 2
-                row = 1
-                cellOffsetListIndex = 0
-                state = nextBlock.state
-                if (Game.canBlockMove(gameBlock, 0, 0)) {
-                    nextBlock.random()
-                    blockTimer.interval = 1000 * Math.pow(4.0/5.0, gameField.level)
-                    restart()
-                }
-                else
-                    gameField.state = 'GAMEOVER'
-            }
+            game: Game
+            onGameOver: gameField.state = 'GAMEOVER'
         }
+
         Keys.onPressed: {
             if (state === '') {
                 if (event.key === Qt.Key_Left)
@@ -191,7 +143,7 @@ Window {
                     color: 'white'
                 }
                 Text {
-                    text: 'SPEED: ' + blockTimer.interval
+                    text: 'SPEED: ' + gameBlock.speed
                     anchors.horizontalCenter: parent.horizontalCenter
                     color: 'white'
                 }
@@ -214,10 +166,9 @@ Window {
                 col: 1
                 row: 1
                 anchors { centerIn: parent; verticalCenterOffset: 5 }
-                Component.onCompleted: random()
-                function random() {
-                    cellOffsetListIndex = 0
-                    state = states[Math.floor(Math.random() * states.length)].name
+                Connections {
+                    target: gameBlock
+                    onNewState: nextBlock.state = nextState
                 }
             }
         }
