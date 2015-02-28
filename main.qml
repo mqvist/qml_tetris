@@ -70,8 +70,8 @@ Window {
                 row = 1
                 cellOffsetListIndex = 0
                 state = nextBlock.state
-                nextBlock.random()
                 if (Game.canBlockMove(gameBlock, 0, 0)) {
+                    nextBlock.random()
                     blockTimer.interval = 1000 * Math.pow(4.0/5.0, gameField.level)
                     restart()
                 }
@@ -160,6 +160,7 @@ Window {
             State {
                 name: 'GAMEOVER'
                 PropertyChanges { target: gameOverMessage; visible: true; opacity: 1.0}
+                PropertyChanges { target: gameBlock; visible: false }
             }
         ]
     }
