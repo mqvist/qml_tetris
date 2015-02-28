@@ -14,8 +14,8 @@ Window {
         property int cellSize: 20
         property int cols: 10
         property int rows: 20
-        property int score: 0
-        property int totalRowsKilled: 0
+        property int score
+        property int totalRowsKilled
         property int level: totalRowsKilled / 10
         width: cellSize * cols
         height: cellSize * rows
@@ -42,8 +42,10 @@ Window {
                     col += 1
             }
             function down() {
-                if (Game.canBlockMove(gameBlock, 1, 0))
+                if (Game.canBlockMove(gameBlock, 1, 0)) {
                     row += 1
+                    blockTimer.restart()
+                }
                 else {
                     blockTimer.running = false
                     Game.freezeBlock(gameBlock)
@@ -73,40 +75,55 @@ Window {
             }
         }
         Keys.onPressed: {
-            if (state !== 'RUNNING')
-                return
-            if (event.key === Qt.Key_Left)
-                gameBlock.left()
-            else if (event.key === Qt.Key_Right)
-                gameBlock.right()
-            else if (event.key === Qt.Key_Down)
-                gameBlock.down()
-            else if (event.key === Qt.Key_Space)
-                gameBlock.drop()
-            else if (event.key === Qt.Key_Up)
-                gameBlock.rotate()
+            if (state == 'RUNNING') {
+                if (event.key === Qt.Key_Left)
+                    gameBlock.left()
+                else if (event.key === Qt.Key_Right)
+                    gameBlock.right()
+                else if (event.key === Qt.Key_Down)
+                    gameBlock.down()
+                else if (event.key === Qt.Key_Space)
+                    gameBlock.drop()
+                else if (event.key === Qt.Key_Up)
+                    gameBlock.rotate()
+            }
+            else if (state == 'GAMEOVER') {
+                if (event.key === Qt.Key_N)
+                    newGame()
+            }
         }
         onRowsKilled: {
             totalRowsKilled += rows
             score += Game.scoreKilledRows(level, rows)
         }
-        Text {
-            id: gameOverText
-            text: "Game Over"
-            font.pointSize: 32
-            style: Text.Outline
+        Column {
+            id: gameOverMessage
             anchors.centerIn: parent
-            color: 'white'
+            visible: false
             z: 10
+            Behavior on opacity { NumberAnimation { duration: 2000 } }
+            Text {
+                text: "Game Over"
+                font.pointSize: 32
+                style: Text.Outline
+                color: 'white'
+            }
+            Text {
+                text: "Press n for new game"
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.pointSize: 12
+                style: Text.Outline
+                color: 'white'
+            }
         }
         states: [
             State {
                 name: 'RUNNING'
-                PropertyChanges { target: gameOverText; visible: false }
+                PropertyChanges { target: gameOverMessage; visible: false; opacity: 0.0 }
             },
             State {
                 name: 'GAMEOVER'
-                PropertyChanges { target: gameOverText; visible: true }
+                PropertyChanges { target: gameOverMessage; visible: true; opacity: 1.0}
             }
         ]
     }
@@ -181,4 +198,11 @@ Window {
         }
     }
     Component.onCompleted: Game.init(gameField);
+    function newGame() {
+        Game.reset(gameField)
+        gameField.score = 0
+        gameField.totalRowsKilled = 0
+        gameField.state = 'RUNNING'
+        gameBlock.reset()
+    }
 }

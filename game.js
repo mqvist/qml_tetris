@@ -4,8 +4,8 @@ var cellComponent = Qt.createComponent("Cell.qml");
 var gameField;
 
 function init(_gameField) {
-    console.log("init")
-    gameField = _gameField
+    console.log("init");
+    gameField = _gameField;
     cells = new Array(gameField.rows);
     for (var i = 0; i < gameField.rows; i++) {
         cells[i] = new Array(gameField.cols);
@@ -25,6 +25,16 @@ function init(_gameField) {
     for (var i = 0; i < gameField.rows; i++) {
         rowCounts[i] = 0;
     }
+}
+
+function reset(_gameField) {
+    console.log('reset');
+    gameField = _gameField;
+    for (var i = 0; i < gameField.rows; i++)
+        for (var j = 0; j < gameField.cols; j++)
+            cells[i][j].visible = false;
+    for (var i = 0; i < gameField.rows; i++)
+        rowCounts[i] = 0;
 }
 
 function isCellFree(row, col) {
