@@ -21,7 +21,7 @@ Window {
         height: cellSize * rows
         color: 'black'
         focus: true
-        state: 'RUNNING'
+        state: ''
 
         signal rowsKilled (int rows)
 
@@ -44,10 +44,9 @@ Window {
             function down() {
                 if (Game.canBlockMove(gameBlock, 1, 0)) {
                     row += 1
-                    blockTimer.restart()
                 }
                 else {
-                    blockTimer.running = false
+                    stop()
                     Game.freezeBlock(gameBlock)
                     reset()
                 }
@@ -60,6 +59,12 @@ Window {
                 if (!Game.canBlockMove(gameBlock, 0, 0))
                     rotateCW()
             }
+            function stop() {
+                blockTimer.running = false
+            }
+            function restart() {
+                blockTimer.restart()
+            }
             function reset() {
                 col = gameField.cols / 2
                 row = 1
@@ -68,24 +73,33 @@ Window {
                 nextBlock.random()
                 if (Game.canBlockMove(gameBlock, 0, 0)) {
                     blockTimer.interval = 1000 * Math.pow(4.0/5.0, gameField.level)
-                    blockTimer.running = true
+                    restart()
                 }
                 else
                     gameField.state = 'GAMEOVER'
             }
         }
         Keys.onPressed: {
-            if (state == 'RUNNING') {
+            if (state === '') {
                 if (event.key === Qt.Key_Left)
                     gameBlock.left()
                 else if (event.key === Qt.Key_Right)
                     gameBlock.right()
-                else if (event.key === Qt.Key_Down)
+                else if (event.key === Qt.Key_Down) {
+                    gameBlock.stop()
                     gameBlock.down()
+                    gameBlock.restart()
+                }
                 else if (event.key === Qt.Key_Space)
                     gameBlock.drop()
                 else if (event.key === Qt.Key_Up)
                     gameBlock.rotate()
+                else if (event.key === Qt.Key_P)
+                    pauseGame()
+            }
+            else if (state === 'PAUSED') {
+                if (event.key === Qt.Key_P)
+                    resumeGame()
             }
             else if (state == 'GAMEOVER') {
                 if (event.key === Qt.Key_N)
@@ -100,6 +114,7 @@ Window {
             id: gameOverMessage
             anchors.centerIn: parent
             visible: false
+            opacity: 0.0
             z: 10
             Behavior on opacity { NumberAnimation { duration: 2000 } }
             Text {
@@ -116,10 +131,31 @@ Window {
                 color: 'white'
             }
         }
+        Column {
+            id: pauseMessage
+            anchors.centerIn: parent
+            visible: false
+            opacity: 0.0
+            z: 10
+            Behavior on opacity { NumberAnimation { duration: 1000 } }
+            Text {
+                text: "Game Paused"
+                font.pointSize: 32
+                style: Text.Outline
+                color: 'white'
+            }
+            Text {
+                text: "Press p to continue"
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.pointSize: 12
+                style: Text.Outline
+                color: 'white'
+            }
+        }
         states: [
             State {
-                name: 'RUNNING'
-                PropertyChanges { target: gameOverMessage; visible: false; opacity: 0.0 }
+                name: 'PAUSED'
+                PropertyChanges { target: pauseMessage; visible: true; opacity: 1.0 }
             },
             State {
                 name: 'GAMEOVER'
@@ -202,7 +238,15 @@ Window {
         Game.reset(gameField)
         gameField.score = 0
         gameField.totalRowsKilled = 0
-        gameField.state = 'RUNNING'
+        gameField.state = ''
         gameBlock.reset()
+    }
+    function pauseGame() {
+        gameBlock.stop()
+        gameField.state = 'PAUSED'
+    }
+    function resumeGame() {
+        gameBlock.restart()
+        gameField.state = ''
     }
 }
