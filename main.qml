@@ -22,7 +22,9 @@ Window {
         color: 'black'
         focus: true
         state: 'RUNNING'
+
         signal rowsKilled (int rows)
+
         Block {
             id: gameBlock
             Component.onCompleted: reset()
@@ -73,21 +75,16 @@ Window {
         Keys.onPressed: {
             if (state !== 'RUNNING')
                 return
-            if (event.key === Qt.Key_Left) {
+            if (event.key === Qt.Key_Left)
                 gameBlock.left()
-            }
-            else if (event.key === Qt.Key_Right) {
+            else if (event.key === Qt.Key_Right)
                 gameBlock.right()
-            }
-            else if (event.key === Qt.Key_Down) {
+            else if (event.key === Qt.Key_Down)
                 gameBlock.down()
-            }
-            else if (event.key === Qt.Key_Space) {
+            else if (event.key === Qt.Key_Space)
                 gameBlock.drop()
-            }
-            else if (event.key === Qt.Key_Up) {
+            else if (event.key === Qt.Key_Up)
                 gameBlock.rotate()
-            }
         }
         onRowsKilled: {
             totalRowsKilled += rows
@@ -115,20 +112,15 @@ Window {
     }
     ColumnLayout {
         spacing: 2
-        anchors.left: gameField.right
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
+        anchors { left: gameField.right; top: parent.top; bottom: parent.bottom; right: parent.right }
         Rectangle {
             color: 'black'
-            border.color: 'blue'
-            border.width: 2
+            border { color: 'blue'; width: 2 }
             radius: 10
             Layout.fillWidth: true
             Layout.preferredHeight: 80
             Column {
-                anchors.fill: parent
-                anchors.margins: 5
+                anchors {fill: parent; margins: 5 }
                 Text {
                     text: 'SCORE: ' + gameField.score
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -153,25 +145,21 @@ Window {
         }
         Rectangle {
             color: 'black'
-            border.color: 'blue'
-            border.width: 2
+            border { color: 'blue'; width: 2 }
             radius: 10
             Layout.fillWidth: true
             Layout.preferredHeight: 80
             Text {
                 id: next
                 text: 'NEXT'
-                anchors.top: parent.top
-                anchors.topMargin: 5
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors { top: parent.top; topMargin: 5; horizontalCenter: parent.horizontalCenter }
                 color: 'white'
             }
             Block {
                 id: nextBlock
                 col: 1
                 row: 1
-                anchors.centerIn: parent
-                anchors.verticalCenterOffset: 5
+                anchors { centerIn: parent; verticalCenterOffset: 5 }
                 Component.onCompleted: random()
                 function random() {
                     cellOffsetListIndex = 0
@@ -181,16 +169,13 @@ Window {
         }
         Rectangle {
             color: 'black'
-            border.color: 'blue'
-            border.width: 2
+            border { color: 'blue'; width: 2 }
             radius: 10
             Layout.fillWidth: true
             Layout.fillHeight: true
             Text {
                 text: 'HIGHSCORES'
-                anchors.top: parent.top
-                anchors.topMargin: 5
-                anchors.horizontalCenter: parent.horizontalCenter
+                anchors { top: parent.top; topMargin: 5; horizontalCenter: parent.horizontalCenter }
                 color: 'white'
             }
         }

@@ -39,7 +39,6 @@ function isCellFree(row, col) {
 }
 
 function canBlockMove(block, rowDelta, colDelta) {
-    console.log('canBlockMove')
     for (var i = 0; i < 4; i++) {
         var cellOffset = block.cellOffsets[i];
         var row = block.row + cellOffset[0] + rowDelta;
@@ -62,14 +61,12 @@ function killRow(row) {
 }
 
 function fillCell(row, col, color) {
-    //console.log('fillCell', row, col, color);
     cells[row-1][col-1].color = color;
     cells[row-1][col-1].visible = true;
     rowCounts[row-1] += 1;
 }
 
 function freezeBlock(block) {
-    console.debug('fixBlock');
     for (var i = 0; i < 4; i++) {
         var cellOffset = block.cellOffsets[i];
         var row = block.row + cellOffset[0];
