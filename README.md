@@ -1,4 +1,4 @@
 # qml_tetris
 QML practice project
 
-![alt text](http://url/to/img.png)
+![Screen shot](https://github.com/mqvist/qml_tetris/blob/master/screen_shot.png)
